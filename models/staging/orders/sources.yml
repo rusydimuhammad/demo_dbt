@@ -1,0 +1,13 @@
+version: 2
+
+sources:
+  - name: demo_data
+    schema: default
+    tables:
+      - name: orders
+        config:
+          freshness:
+            warn_after: {count: 1, period: hour}
+            error_after: {count: 2, period: hour}
+            # filter: datediff(minute, created_at, current_timestamp) < 20
+        loaded_at_field: created_at

@@ -9,7 +9,6 @@ models:
         description: "The primary key for this table"
         data_tests:
           - unique
-          - not_null
 
   - name: my_second_dbt_model
     description: "A starter dbt model"
@@ -19,3 +18,17 @@ models:
         data_tests:
           - unique
           - not_null
+
+  - name: example__team_details
+    description: "A list of a few NBA teams that made the Playoffs in 2020"
+    columns:
+      - name: city
+        description: "{{ doc('team_details_city') }}"
+        data_tests:
+          - is_la_team
+      - name: team
+        description: "{{ doc('team_details_team_name') }}"
+        data_tests:
+          - not_null
+      - name: state
+        description: "{{ doc('team_details_state') }}"

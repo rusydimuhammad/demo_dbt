@@ -8,6 +8,10 @@ version: '1.0.0'
 # This setting configures which "profile" dbt uses for this project.
 profile: 'demo_dbt'
 
+# Contoh buat variabel yang bisa diakses di models
+vars:
+  current_champion: Lakers
+
 # These configurations specify where dbt should look for different types of files.
 # The `model-paths` config, for example, states that models in this project can be
 # found in the "models/" directory. You probably won't need to change these!
@@ -18,6 +22,8 @@ seed-paths: ["seeds"]
 macro-paths: ["macros"]
 snapshot-paths: ["snapshots"]
 
+docs-paths: ["docs"] # buat docs blocks
+
 clean-targets:         # directories to be removed by `dbt clean`
   - "target"
   - "dbt_packages"
@@ -26,10 +32,15 @@ clean-targets:         # directories to be removed by `dbt clean`
 # Configuring models
 # Full documentation: https://docs.getdbt.com/docs/configuring-models
 
+on-run-start: "insert into dbt_project_dev.staging.dbt_audits (audit_type,created_at) values ('run_start',current_timestamp());"
+on-run-end: "insert into dbt_project_dev.staging.dbt_audits (audit_type,created_at) values ('run_end',current_timestamp());"
+
 # In this example config, we tell dbt to build all models in the example/
 # directory as views. These settings can be overridden in the individual model
 # files using the `{{ config(...) }}` macro.
 models:
+  pre-hook: "insert into dbt_project_dev.staging.dbt_audits (audit_type,created_at) values ('model_start',current_timestamp());"
+  post-hook: "insert into dbt_project_dev.staging.dbt_audits (audit_type,created_at) values ('model_end',current_timestamp());"
   demo_dbt:
     # Config indicated by + and applies to all files under models/example/
     staging:
